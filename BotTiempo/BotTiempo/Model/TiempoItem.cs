@@ -10,6 +10,7 @@ namespace BotTiempo.Model
     {
         public Location location { get; set; }
         public Current current { get; set; }
+        public string Status { get; set; }
     }
 
     public class Location

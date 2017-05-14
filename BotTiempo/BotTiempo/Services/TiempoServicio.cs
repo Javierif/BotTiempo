@@ -21,6 +21,13 @@ namespace BotTiempo.Services
                 //Descargamos el contenido json sin formateo
                 var rawData = await client.DownloadStringTaskAsync(new Uri(uri));
                 var tiempoItem = JsonConvert.DeserializeObject<TiempoItem>(rawData);
+                //Añadimos una comprobación de que se ha encontrado correctamente el lugar.
+                if (tiempoItem.location.Equals(null)) {
+                    tiempoItem.Status = "ERROR";
+                } else
+                {
+                    tiempoItem.Status = "OK";
+                }               
             }
                 
          }
