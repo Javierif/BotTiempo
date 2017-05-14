@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using Microsoft.Bot.Connector;
 using Newtonsoft.Json;
+using BotTiempo.Services;
 
 namespace BotTiempo
 {
@@ -23,17 +24,12 @@ namespace BotTiempo
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
                 // calculate something for us to return
-                int length = (activity.Text ?? string.Empty).Length;
+                var lugar = activity.Text;
+
+
                 Activity reply;
-                if (activity.Text.Equals("¿Cual es tu cancion favorita?"))
-                {
-                    reply = activity.CreateReply($"Mi canción favorita es AnnaBot =D ---> https://www.youtube.com/watch?v=-Vzw1NdSZmc");
-                }
-                else
-                {
-                    reply = activity.CreateReply($"You sent {activity.Text} which was {length} characters");
-                }
-                // return our reply to the user
+                reply = activity.CreateReply($"You sent {activity.Text} which was characters");
+              
 
                 await connector.Conversations.ReplyToActivityAsync(reply);
             }
@@ -43,6 +39,20 @@ namespace BotTiempo
             }
             var response = Request.CreateResponse(HttpStatusCode.OK);
             return response;
+        }
+
+        private async Task<string> GetTiempo(string lugar)
+        {
+            var tiempoItem = await TiempoServicio.GetTiempo(lugar);
+            string returnValue;
+            if("ERROR" == tiempoItem.Status)
+            {
+                returnValue = $"Lo siento, no he podido encontrar el lugar {lugar}";
+            } else
+            {
+                returnValue = $"Hoy en {tiempoItem.location.name} está el tiempo {tiempoItem.current.condition.text}.";
+            }
+            return returnValue;
         }
 
         private Activity HandleSystemMessage(Activity message)
