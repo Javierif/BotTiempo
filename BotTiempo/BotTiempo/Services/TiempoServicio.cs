@@ -19,16 +19,25 @@ namespace BotTiempo.Services
             //Using sirve para crear un bloque de ejecución donde liberará los recursos al salir.
             using (var client = new WebClient())
             {
-                //Descargamos el contenido json sin formateo
-                var rawData = await client.DownloadStringTaskAsync(new Uri(uri));
-                tiempoItem = JsonConvert.DeserializeObject<TiempoItem>(rawData);
-                //Añadimos una comprobación de que se ha encontrado correctamente el lugar.
-                if (tiempoItem.location.Equals(null)) {
-                    tiempoItem.Status = "ERROR";
-                } else
+                try
                 {
-                    tiempoItem.Status = "OK";
-                }       
+                    //Descargamos el contenido json sin formateo
+                    var rawData = await client.DownloadStringTaskAsync(new Uri(uri));
+                    tiempoItem = JsonConvert.DeserializeObject<TiempoItem>(rawData);
+                    //Añadimos una comprobación de que se ha encontrado correctamente el lugar.
+                    if (tiempoItem.location.Equals(null))
+                    {
+                        tiempoItem.Status = "ERROR";
+                    }
+                    else
+                    {
+                        tiempoItem.Status = "OK";
+                    }
+                } catch(Exception e)
+                {
+                    tiempoItem.Status = "ERROR";
+                }
+
             }
             return tiempoItem;
         }
