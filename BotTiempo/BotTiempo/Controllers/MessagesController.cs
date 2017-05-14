@@ -23,12 +23,12 @@ namespace BotTiempo
             if (activity.Type == ActivityTypes.Message)
             {
                 ConnectorClient connector = new ConnectorClient(new Uri(activity.ServiceUrl));
-                // calculate something for us to return
-                var lugar = activity.Text;
 
+                var lugar = activity.Text;
+                var replyMessage = await GetTiempo(lugar);
 
                 Activity reply;
-                reply = activity.CreateReply($"You sent {activity.Text} which was characters");
+                reply = activity.CreateReply(replyMessage);
               
 
                 await connector.Conversations.ReplyToActivityAsync(reply);
