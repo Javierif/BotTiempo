@@ -25,8 +25,7 @@ namespace BotTiempo.Services
                 if(msg.IsSuccessStatusCode)
                 {
                     var jsonResponse = await msg.Content.ReadAsStringAsync();
-                    var data = JsonConvert.DeserializeObject<LuisResponse>(jsonResponse);
-                    return data;
+                    luisResponse = JsonConvert.DeserializeObject<LuisResponse>(jsonResponse);
                 }
                
             }
